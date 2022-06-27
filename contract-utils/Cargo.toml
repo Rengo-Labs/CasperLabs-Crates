@@ -1,0 +1,14 @@
+[package]
+name = "casperlabs-contract-utils"
+version = "0.1.0"
+authors = ["Muhammad Adrees <muhammad.adrees@scytalelabs.com>"]
+edition = "2018"
+license = "MIT"
+description = "this package have basic utilities for CasperLabs Contracts"
+
+[dependencies]
+casper-contract = "1.4.4"
+casper-types = "1.5.0"
+casper_types_derive = "0.1.0"
+hex = { version = "0.4.3", default-features = false }
+

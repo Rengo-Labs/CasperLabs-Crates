@@ -1,0 +1,17 @@
+[package]
+name = "casperlabs-test-env"
+version = "0.1.1"
+authors = ["Muhammad Adrees <muhammad.adrees@scytalelabs.com>"]
+edition = "2018"
+license = "MIT"
+description = "this package have basic utilities for CasperLabs Test Environment"
+
+[dependencies]
+casper-contract = { version = "1.4.4", default-features = false, features = ["test-support"] }
+casper-engine-test-support = { version = "2.2.0", features = ["test-support"] }
+casper-execution-engine = "2.0.0"
+casper-types = "1.5.0"
+rand = "0.8.5"
+
+[features]
+default = ["casper-contract/std", "casper-types/std", "casper-engine-test-support/test-support", "casper-contract/test-support"]
