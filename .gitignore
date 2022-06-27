@@ -10,6 +10,7 @@ pausable_crate/target
 reentrancy_guard_crate/target
 test-env/target
 staking_rewards_utils/target
+dragon_lair_utils/target
 contract-utils/Cargo.lock
 curve-token-utils/Cargo.lock
 dual_rewards_distribution_recipient_crate/Cargo.lock
@@ -22,5 +23,6 @@ pausable_crate/Cargo.lock
 reentrancy_guard_crate/Cargo.lock
 test-env/Cargo.lock
 staking_rewards_utils/Cargo.lock
+dragon_lair_utils/Cargo.lock
 /.history
 Cargo.lock
