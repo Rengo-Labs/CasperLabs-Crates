@@ -62,6 +62,21 @@ impl Dict {
     pub fn set_by_keys<T: CLTyped + ToBytes>(&self, keys: (&Key, &Key), value: T) {
         self.set(&keys_to_str(keys.0, keys.1), value)
     }
+    pub fn set_by_values<T: CLTyped + ToBytes, U: CLTyped + ToBytes, V: CLTyped + ToBytes>(
+        &self,
+        keys: (&T, &U),
+        value: V,
+    ) {
+        self.set(&values_to_str(keys.0, keys.1), value);
+    }
+    
+    pub fn get_by_values<T: CLTyped + ToBytes, U: CLTyped + ToBytes, R: CLTyped + FromBytes>(
+        &self,
+        keys: (&T, &U),
+    ) -> Option<R> {
+        self.get(&values_to_str(keys.0, keys.1))
+    }
+    
 
     // pub fn set_by_key_and_int<T: CLTyped + ToBytes>(&self, keys: (&Key, &U256), value: T) {
     //     self.set(&key_and_value_to_str(keys.0, keys.1), value)
@@ -97,7 +112,10 @@ pub fn keys_to_str(key_a: &Key, key_b: &Key) -> String {
     let bytes = runtime::blake2b(bytes_a);
     hex::encode(bytes)
 }
-pub fn values_to_str<T: CLTyped + ToBytes>(value_a: &T, value_b: &T) -> String {
+
+
+
+pub fn values_to_str<T: CLTyped + ToBytes, U: CLTyped + ToBytes>(value_a: &T, value_b: &U) -> String {
     let mut bytes_a = value_a.to_bytes().unwrap_or_revert();
     let mut bytes_b = value_b.to_bytes().unwrap_or_revert();
 
