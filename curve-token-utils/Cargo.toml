@@ -1,6 +1,6 @@
 [package]
 name = "casperlabs-curve-token-utils"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 authors = ["Nouman Nadeem<nouman.nadeem.zafar@scytalelabs.com>"]
 license = "MIT"
@@ -8,13 +8,21 @@ description = "this package have basic utilities for CasperLabs Curve Token Cont
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[patch.crates-io]
+renvm-sig = { git = 'https://github.com/Scytalelabs-official/CasperLabs-renvm-sig.git', branch = 'main' }
+
+
 [dependencies]
 casper-contract = "1.4.4"
 casper-types = "1.5.0"
 casper_types_derive = "0.1.0"
 casperlabs-contract-utils = "0.1.0"
-renvm-sig = "0.1.1"
-hex = "0.4.3"
+renvm-sig = "0.1.1 "
+hex = { version = "0.4.3", default-features = false }
 
 [features]
 default = ["casper-contract/std", "casper-types/std", "casper-contract/test-support"]
+
+[profile.release]
+codegen-units = 1
+lto = true
