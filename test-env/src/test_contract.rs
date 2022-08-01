@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use casper_types::{
-    account::AccountHash, bytesrepr::FromBytes, CLTyped, ContractHash, RuntimeArgs,
+    account::AccountHash, bytesrepr::FromBytes, CLTyped, ContractHash, RuntimeArgs, ContractPackageHash
 };
 
 use crate::{utils::DeploySource, TestEnv};
@@ -71,4 +71,33 @@ impl TestContract {
         };
         self.env.run(sender, session_code, session_args, time);
     }
+    
+}
+pub fn call_contract_with_contract_hash(
+    env: &TestEnv,
+    contract_hash: ContractHash,
+    sender: AccountHash,
+    entry_point: &str,
+    session_args: RuntimeArgs,
+    time: u64,
+) {
+    let session_code = DeploySource::ByContractHash {
+        hash: contract_hash,
+        method: entry_point.to_string(),
+    };
+    env.run(sender, session_code, session_args, time);
+}
+pub fn call_contract_with_package_hash(
+    env: &TestEnv,
+    package_hash: ContractPackageHash,
+    sender: AccountHash,
+    entry_point: &str,
+    session_args: RuntimeArgs,
+    time: u64,
+) {
+    let session_code = DeploySource::ByPackageHash {
+        package_hash,
+        method: entry_point.to_string(),
+    };
+    env.run(sender, session_code, session_args, time);
 }
