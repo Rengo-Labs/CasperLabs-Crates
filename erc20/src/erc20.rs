@@ -407,6 +407,10 @@ pub trait ERC20<Storage: ContractStorage>: ContractContext<Storage> {
         data::symbol()
     }
 
+    fn decimals(&mut self) -> u8 {
+        data::decimals()
+    }
+
     fn get_permit_type_and_domain_separator(
         &mut self,
         name: &str,
