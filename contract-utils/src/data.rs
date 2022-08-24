@@ -44,12 +44,12 @@ impl Dict {
         self.get(&key_to_str(key))
     }
 
-    pub fn get_by_keys<T: CLTyped + FromBytes>(&self, keys: (&Key, &Key)) -> Option<T> {
+    pub fn get_by_keys<T: CLTyped + FromBytes, U: CLTyped + ToBytes>(
+        &self,
+        keys: (&U, &Key),
+    ) -> Option<T> {
         self.get(&keys_to_str(keys.0, keys.1))
     }
-    // pub fn get_by_key_and_int<T: CLTyped + FromBytes>(&self, keys: (&Key, &U256)) -> Option<T> {
-    //     self.get(&key_and_value_to_str(keys.0, keys.1))
-    // }
 
     pub fn set<T: CLTyped + ToBytes>(&self, key: &str, value: T) {
         storage::dictionary_put(self.uref, key, Some(value));
@@ -59,7 +59,11 @@ impl Dict {
         self.set(&key_to_str(key), value);
     }
 
-    pub fn set_by_keys<T: CLTyped + ToBytes>(&self, keys: (&Key, &Key), value: T) {
+    pub fn set_by_keys<T: CLTyped + ToBytes, U: CLTyped + ToBytes>(
+        &self,
+        keys: (&U, &Key),
+        value: T,
+    ) {
         self.set(&keys_to_str(keys.0, keys.1), value)
     }
     pub fn set_by_values<T: CLTyped + ToBytes, U: CLTyped + ToBytes, V: CLTyped + ToBytes>(
@@ -69,18 +73,13 @@ impl Dict {
     ) {
         self.set(&values_to_str(keys.0, keys.1), value);
     }
-    
+
     pub fn get_by_values<T: CLTyped + ToBytes, U: CLTyped + ToBytes, R: CLTyped + FromBytes>(
         &self,
         keys: (&T, &U),
     ) -> Option<R> {
         self.get(&values_to_str(keys.0, keys.1))
     }
-    
-
-    // pub fn set_by_key_and_int<T: CLTyped + ToBytes>(&self, keys: (&Key, &U256), value: T) {
-    //     self.set(&key_and_value_to_str(keys.0, keys.1), value)
-    // }
 
     pub fn remove<T: CLTyped + ToBytes>(&self, key: &str) {
         storage::dictionary_put(self.uref, key, Option::<T>::None);
@@ -103,19 +102,20 @@ pub fn key_to_str(key: &Key) -> String {
     }
 }
 
-pub fn keys_to_str(key_a: &Key, key_b: &Key) -> String {
+pub fn keys_to_str<U: CLTyped + ToBytes,V: CLTyped + ToBytes>(key_a: &U, key_b: &V) -> String {
     let mut bytes_a = key_a.to_bytes().unwrap_or_revert();
     let mut bytes_b = key_b.to_bytes().unwrap_or_revert();
-
     bytes_a.append(&mut bytes_b);
-
     let bytes = runtime::blake2b(bytes_a);
     hex::encode(bytes)
 }
 
 
 
-pub fn values_to_str<T: CLTyped + ToBytes, U: CLTyped + ToBytes>(value_a: &T, value_b: &U) -> String {
+pub fn values_to_str<T: CLTyped + ToBytes, U: CLTyped + ToBytes>(
+    value_a: &T,
+    value_b: &U,
+) -> String {
     let mut bytes_a = value_a.to_bytes().unwrap_or_revert();
     let mut bytes_b = value_b.to_bytes().unwrap_or_revert();
 
