@@ -10,7 +10,7 @@ use casper_contract::{
 };
 use casper_types::{
     bytesrepr::{FromBytes, ToBytes},
-    ApiError, CLTyped, Key, URef,
+    ApiError, CLTyped, Key, URef, U128, U256, RuntimeArgs,
 };
 use casper_types_derive::{CLTyped, FromBytes, ToBytes};
 
@@ -157,4 +157,73 @@ pub fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
             runtime::put_key(name, key);
         }
     }
+}
+
+pub fn call_function(target: Key, function_name: String, function_args: RuntimeArgs) -> String {
+    if function_name == "get_gauge_weight"
+        || function_name == "gauge_relative_weight"
+        || function_name == "inflation_rate"
+        || function_name == "working_supply"
+        || function_name == "balance_of"
+        || function_name == "duration"
+        || function_name == "reward_rate"
+        || function_name == "balances"
+        || function_name == "total_supply"
+        || function_name == "get_balance"
+        || function_name == "earned"
+        || function_name == "allowance"
+        || function_name == "locked_end"
+        || function_name == "vested_of"
+        || function_name == "locked_of"
+        || function_name == "initial_locked"
+        || function_name == "start_time"
+        || function_name == "end_time"
+        || function_name == "total_claimed"
+        || function_name == "working_balances"
+        || function_name == "vested_supply"
+        || function_name == "user_reward_per_token_paid"
+    {
+        let ret: U256 = runtime::call_versioned_contract(
+            target.into_hash().unwrap_or_revert().into(),
+            None,
+            &function_name,
+            function_args,
+        );
+        let data: String = ret.to_string() + ":U256";
+        return data;
+    }
+    else if function_name == "gauges" || function_name == "lp_token" {
+        let ret: Key = runtime::call_versioned_contract(
+            target.into_hash().unwrap_or_revert().into(),
+            None,
+            &function_name,
+            function_args,
+        );
+        let data: String = ret.to_string() + ":Key";
+        return data;
+    }
+    else if function_name == "gauge_type_names" {
+        let ret: String = runtime::call_versioned_contract(
+            target.into_hash().unwrap_or_revert().into(),
+            None,
+            &function_name,
+            function_args,
+        );
+        let data: String = ret.to_string() + ":String";
+        return data;
+    }
+    else if function_name == "gauge_types"
+        || function_name == "n_gauge_types"
+        || function_name == "n_gauges"
+    {
+        let ret: U128 = runtime::call_versioned_contract(
+            target.into_hash().unwrap_or_revert().into(),
+            None,
+            &function_name,
+            function_args,
+        );
+        let data: String = ret.to_string() + ":U128";
+        return data;
+    }
+    "".to_string()
 }
