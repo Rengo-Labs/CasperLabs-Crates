@@ -192,7 +192,7 @@ pub fn call_function(target: Key, function_name: String, function_args: RuntimeA
         let data: String = ret.to_string() + ":U256";
         return data;
     }
-    else if function_name == "gauges" || function_name == "lp_token" {
+    if function_name == "gauges" || function_name == "lp_token" {
         let ret: Key = runtime::call_versioned_contract(
             target.into_hash().unwrap_or_revert().into(),
             None,
@@ -202,7 +202,7 @@ pub fn call_function(target: Key, function_name: String, function_args: RuntimeA
         let data: String = ret.to_string() + ":Key";
         return data;
     }
-    else if function_name == "gauge_type_names" {
+    if function_name == "gauge_type_names" {
         let ret: String = runtime::call_versioned_contract(
             target.into_hash().unwrap_or_revert().into(),
             None,
@@ -212,17 +212,17 @@ pub fn call_function(target: Key, function_name: String, function_args: RuntimeA
         let data: String = ret.to_string() + ":String";
         return data;
     }
-    else if function_name == "gauge_types"
+    if function_name == "gauge_types"
         || function_name == "n_gauge_types"
         || function_name == "n_gauges"
     {
-        let ret: U128 = runtime::call_versioned_contract(
+        let ret: (bool,U128) = runtime::call_versioned_contract(
             target.into_hash().unwrap_or_revert().into(),
             None,
             &function_name,
             function_args,
         );
-        let data: String = ret.to_string() + ":U128";
+        let data: String = "(".to_string() + &ret.0.to_string() + "," + &ret.1.to_string() + ")" + ":(bool,U128)";
         return data;
     }
     "".to_string()
