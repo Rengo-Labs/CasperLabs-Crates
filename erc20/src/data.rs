@@ -1,16 +1,7 @@
-use alloc::{
-    collections::BTreeMap,
-    string::{String, ToString},
-    vec::Vec,
-};
-use casper_contract::{
-    contract_api::{runtime::get_call_stack, storage},
-    unwrap_or_revert::UnwrapOrRevert,
-};
-use casper_types::{system::CallStackElement, ContractPackageHash, Key, URef, U256};
+use alloc::string::String;
+use casper_contract::{contract_api::runtime::get_call_stack, unwrap_or_revert::UnwrapOrRevert};
+use casper_types::{system::CallStackElement, ContractPackageHash, Key, U256};
 use casperlabs_contract_utils::{get_key, key_to_str, set_key, Dict};
-
-use crate::event::ERC20Event;
 
 const BALANCES_DICT: &str = "balances";
 pub const NONCES_DICT: &str = "nonces";
@@ -129,22 +120,6 @@ pub fn total_supply() -> U256 {
 pub fn set_total_supply(total_supply: U256) {
     set_key(TOTAL_SUPPLY, total_supply);
 }
-
-pub fn set_domain_separator(domain_separator: String) {
-    set_key(DOMAIN_SEPARATOR, domain_separator);
-}
-
-pub fn get_domain_separator() -> String {
-    get_key(DOMAIN_SEPARATOR).unwrap_or_revert()
-}
-
-pub fn set_permit_type_hash(permit_type_hash: String) {
-    set_key(PERMIT_TYPE_HASH, permit_type_hash);
-}
-
-pub fn get_permit_type_hash() -> String {
-    get_key(PERMIT_TYPE_HASH).unwrap_or_revert()
-}
 pub fn set_hash(contract_hash: Key) {
     set_key(SELF_CONTRACT_HASH, contract_hash);
 }
@@ -171,74 +146,4 @@ pub fn contract_package_hash() -> ContractPackageHash {
         _ => None,
     };
     package_hash.unwrap_or_revert()
-}
-
-pub fn emit(event: &ERC20Event) {
-    let mut events = Vec::new();
-    let package = contract_package_hash();
-    match event {
-        ERC20Event::Mint {
-            recipient,
-            token_ids,
-        } => {
-            for token_id in token_ids {
-                let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
-                param.insert("event_type", "erc20_mint_remove_one".to_string());
-                param.insert("recipient", recipient.to_string());
-                param.insert("token_id", token_id.to_string());
-                events.push(param);
-            }
-        }
-        ERC20Event::Burn { owner, token_ids } => {
-            for token_id in token_ids {
-                let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
-                param.insert("event_type", "erc20_burn_remove_one".to_string());
-                param.insert("owner", owner.to_string());
-                param.insert("token_id", token_id.to_string());
-                events.push(param);
-            }
-        }
-        ERC20Event::Approve {
-            owner,
-            spender,
-            token_ids,
-        } => {
-            for token_id in token_ids {
-                let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
-                param.insert("event_type", "erc20_approve_token".to_string());
-                param.insert("owner", owner.to_string());
-                param.insert("spender", spender.to_string());
-                param.insert("token_id", token_id.to_string());
-                events.push(param);
-            }
-        }
-        ERC20Event::Transfer {
-            sender,
-            recipient,
-            token_ids,
-        } => {
-            for token_id in token_ids {
-                let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
-                param.insert("event_type", "erc20_transfer_token".to_string());
-                param.insert("sender", sender.to_string());
-                param.insert("recipient", recipient.to_string());
-                param.insert("token_id", token_id.to_string());
-                events.push(param);
-            }
-        }
-        ERC20Event::MetadataUpdate { token_id } => {
-            let mut param = BTreeMap::new();
-            param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
-            param.insert("event_type", "erc20_metadata_update".to_string());
-            param.insert("token_id", token_id.to_string());
-            events.push(param);
-        }
-    };
-    for param in events {
-        let _: URef = storage::new_uref(param);
-    }
 }
