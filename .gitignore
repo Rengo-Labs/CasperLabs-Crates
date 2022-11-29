@@ -6,6 +6,7 @@ lp-token-wrapper-crate/target
 ownable-crate/target
 owned_crate/target/
 erc20/target
+erc20_new/target
 pausable_crate/target
 reentrancy_guard_crate/target
 test-env/target
@@ -20,6 +21,7 @@ lp-token-wrapper-crate/Cargo.lock
 ownable-crate/Cargo.lock
 owned_crate/Cargo.lock/
 erc20/Cargo.lock
+erc20_new/Cargo.lock
 pausable_crate/Cargo.lock
 reentrancy_guard_crate/Cargo.lock
 test-env/Cargo.lock
