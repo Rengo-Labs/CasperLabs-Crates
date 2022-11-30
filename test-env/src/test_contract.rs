@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
 use casper_types::{
-    account::AccountHash, bytesrepr::FromBytes, CLTyped, ContractHash, RuntimeArgs, ContractPackageHash
+    account::AccountHash, bytesrepr::FromBytes, CLTyped, ContractHash, ContractPackageHash,
+    RuntimeArgs,
 };
 
 use crate::{utils::DeploySource, TestEnv};
@@ -30,6 +31,10 @@ impl TestContract {
             name: String::from(name),
             contract_owner: sender,
         }
+    }
+
+    pub fn query<T: CLTyped + FromBytes>(&self, dict_name: &str, key: String) -> T {
+        self.env.query(self.contract_hash(), dict_name, key)
     }
 
     pub fn query_dictionary<T: CLTyped + FromBytes>(
@@ -71,7 +76,6 @@ impl TestContract {
         };
         self.env.run(sender, session_code, session_args, time);
     }
-    
 }
 pub fn call_contract_with_contract_hash(
     env: &TestEnv,

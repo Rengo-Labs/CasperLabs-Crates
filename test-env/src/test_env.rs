@@ -1,4 +1,7 @@
-use std::sync::{Arc, Mutex};
+use std::{
+    sync::{Arc, Mutex},
+    time::SystemTime,
+};
 
 use casper_engine_test_support::{InMemoryWasmTestBuilder, DEFAULT_RUN_GENESIS_REQUEST};
 use casper_types::{
@@ -6,6 +9,13 @@ use casper_types::{
 };
 
 use crate::utils::{deploy, fund_account, query, query_dictionary_item, DeploySource};
+
+pub fn now() -> u64 {
+    SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as u64
+}
 
 #[derive(Clone)]
 pub struct TestEnv {
@@ -38,6 +48,18 @@ impl TestEnv {
 
     pub fn next_user(&self) -> AccountHash {
         self.state.lock().unwrap().next_user()
+    }
+
+    pub fn query<T: CLTyped + FromBytes>(
+        &self,
+        contract_hash: [u8; 32],
+        dict_name: &str,
+        key: String,
+    ) -> T {
+        self.state
+            .lock()
+            .unwrap()
+            .query(contract_hash, dict_name.to_string(), key)
     }
 
     pub fn query_dictionary<T: CLTyped + FromBytes>(
@@ -131,6 +153,30 @@ impl TestEnvState {
             true,
             None,
         )
+    }
+
+    pub fn query<T: CLTyped + FromBytes>(
+        &self,
+        contract_hash: [u8; 32],
+        dict_name: String,
+        dictionary_item_key: String,
+    ) -> T {
+        match query_dictionary_item(
+            &self.builder,
+            Key::Hash(contract_hash),
+            Some(dict_name),
+            dictionary_item_key,
+        ) {
+            Ok(value) => value
+                .as_cl_value()
+                .expect("should be cl value.")
+                .clone()
+                .into_t()
+                .expect("Wrong type in query result."),
+            Err(e) => {
+                panic!("{}", e);
+            }
+        }
     }
 
     pub fn query_dictionary<T: CLTyped + FromBytes>(

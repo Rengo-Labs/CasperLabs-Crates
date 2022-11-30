@@ -1,16 +1,15 @@
-#![no_std]
 #![feature(once_cell)]
 
 extern crate alloc;
 
+mod address;
 mod admin_control;
 mod contract_context;
 mod contract_storage;
 mod data;
 
+pub use address::Address;
 pub use admin_control::AdminControl;
 pub use contract_context::ContractContext;
 pub use contract_storage::{ContractStorage, OnChainContractStorage};
-pub use data::{
-    call_function, get_key, key_and_value_to_str, key_to_str, set_key, values_to_str, Dict,
-};
+pub use data::*;

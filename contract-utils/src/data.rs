@@ -4,13 +4,14 @@ use alloc::{
 };
 use core::convert::TryInto;
 
+use crate::Address;
 use casper_contract::{
     contract_api::{runtime, storage},
     unwrap_or_revert::UnwrapOrRevert,
 };
 use casper_types::{
     bytesrepr::{FromBytes, ToBytes},
-    ApiError, CLTyped, Key, URef, U128, U256, RuntimeArgs,
+    ApiError, CLTyped, Key, RuntimeArgs, URef, U128, U256,
 };
 use casper_types_derive::{CLTyped, FromBytes, ToBytes};
 
@@ -94,6 +95,11 @@ impl Dict {
     }
 }
 
+pub fn address_to_str(key: &Address) -> String {
+    let preimage = key.to_bytes().unwrap();
+    base64::encode(&preimage)
+}
+
 pub fn key_to_str(key: &Key) -> String {
     match key {
         Key::Account(account) => account.to_string(),
@@ -102,15 +108,13 @@ pub fn key_to_str(key: &Key) -> String {
     }
 }
 
-pub fn keys_to_str<U: CLTyped + ToBytes,V: CLTyped + ToBytes>(key_a: &U, key_b: &V) -> String {
+pub fn keys_to_str<U: CLTyped + ToBytes, V: CLTyped + ToBytes>(key_a: &U, key_b: &V) -> String {
     let mut bytes_a = key_a.to_bytes().unwrap_or_revert();
     let mut bytes_b = key_b.to_bytes().unwrap_or_revert();
     bytes_a.append(&mut bytes_b);
     let bytes = runtime::blake2b(bytes_a);
     hex::encode(bytes)
 }
-
-
 
 pub fn values_to_str<T: CLTyped + ToBytes, U: CLTyped + ToBytes>(
     value_a: &T,
@@ -216,13 +220,14 @@ pub fn call_function(target: Key, function_name: String, function_args: RuntimeA
         || function_name == "n_gauge_types"
         || function_name == "n_gauges"
     {
-        let ret: (bool,U128) = runtime::call_versioned_contract(
+        let ret: (bool, U128) = runtime::call_versioned_contract(
             target.into_hash().unwrap_or_revert().into(),
             None,
             &function_name,
             function_args,
         );
-        let data: String = "(".to_string() + &ret.0.to_string() + "," + &ret.1.to_string() + ")" + ":(bool,U128)";
+        let data: String =
+            "(".to_string() + &ret.0.to_string() + "," + &ret.1.to_string() + ")" + ":(bool,U128)";
         return data;
     }
     "".to_string()
