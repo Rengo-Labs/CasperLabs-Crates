@@ -2,9 +2,6 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
-use core::convert::TryInto;
-
-use crate::Address;
 use casper_contract::{
     contract_api::{runtime, storage},
     unwrap_or_revert::UnwrapOrRevert,
@@ -14,6 +11,7 @@ use casper_types::{
     ApiError, CLTyped, Key, RuntimeArgs, URef, U128, U256,
 };
 use casper_types_derive::{CLTyped, FromBytes, ToBytes};
+use core::convert::TryInto;
 
 #[derive(Clone, Copy, CLTyped, ToBytes, FromBytes, Default)]
 pub struct Dict {
@@ -93,11 +91,6 @@ impl Dict {
     pub fn remove_by_vec_of_keys<T: CLTyped + ToBytes>(&self, keys: (&Key, &Key)) {
         self.remove::<T>(&keys_to_str(keys.0, keys.1))
     }
-}
-
-pub fn address_to_str(key: &Address) -> String {
-    let preimage = key.to_bytes().unwrap();
-    base64::encode(&preimage)
 }
 
 pub fn key_to_str(key: &Key) -> String {

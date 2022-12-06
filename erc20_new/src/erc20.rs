@@ -23,6 +23,10 @@ pub trait ERC20<Storage: ContractStorage>: ContractContext<Storage> {
         CasperErc20::default().symbol()
     }
 
+    fn decimals(&self) -> u8 {
+        CasperErc20::default().decimals()
+    }
+
     fn total_supply(&self) -> U256 {
         CasperErc20::default().total_supply()
     }

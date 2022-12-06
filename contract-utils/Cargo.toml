@@ -1,6 +1,6 @@
 [package]
 name = "casperlabs-contract-utils"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Muhammad Adrees <muhammad.adrees@scytalelabs.com>"]
 edition = "2018"
 license = "MIT"
@@ -10,7 +10,6 @@ description = "this package have basic utilities for CasperLabs Contracts"
 casper-contract = "1.4.4"
 casper-types = "1.5.0"
 casper_types_derive = "0.1.0"
-base64 = "^0.13.0"
 hex = { version = "0.4.3", default-features = false }
 
 [features]
