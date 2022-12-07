@@ -1,8 +1,7 @@
 use alloc::vec::Vec;
-use core::lazy::OnceCell;
-
 use casper_contract::contract_api::runtime;
 use casper_types::system::CallStackElement;
+use once_cell::unsync::OnceCell;
 
 pub trait ContractStorage {
     fn call_stack(&self) -> &[CallStackElement];

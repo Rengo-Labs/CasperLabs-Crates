@@ -1,6 +1,6 @@
 [package]
 name = "casperlabs-contract-utils"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Muhammad Adrees <muhammad.adrees@scytalelabs.com>"]
 edition = "2018"
 license = "MIT"
@@ -11,6 +11,7 @@ casper-contract = "1.4.4"
 casper-types = "1.5.0"
 casper_types_derive = "0.1.0"
 hex = { version = "0.4.3", default-features = false }
+once_cell = { version = "1.8.0", default-features = false }
 
 [features]
 default = ["casper-contract/std", "casper-types/std", "casper-contract/test-support"]
