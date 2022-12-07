@@ -182,11 +182,21 @@ impl ERC20 {
         Ok(())
     }
 
+    /// Allows specific `owner` , `spender` to transfer up to `amount` of the owner's tokens.
+    pub fn _approve(
+        &mut self,
+        owner: Address,
+        spender: Address,
+        amount: U256,
+    ) -> Result<(), Error> {
+        self.write_allowance(owner, spender, amount);
+        Ok(())
+    }
+
     /// Allows `spender` to transfer up to `amount` of the direct caller's tokens.
     pub fn approve(&mut self, spender: Address, amount: U256) -> Result<(), Error> {
         let owner = detail::get_immediate_caller_address()?;
-        self.write_allowance(owner, spender, amount);
-        Ok(())
+        self._approve(owner, spender, amount)
     }
 
     /// Returns the amount of `owner`'s tokens allowed to be spent by `spender`.

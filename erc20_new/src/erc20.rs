@@ -59,6 +59,18 @@ pub trait ERC20<Storage: ContractStorage>: ContractContext<Storage> {
         ret
     }
 
+    fn _approve(&self, owner: Address, spender: Address, amount: U256) -> Result<(), Error> {
+        let ret = CasperErc20::default()._approve(owner, spender, amount);
+        if ret.is_ok() {
+            emit(&ERC20Event::Approval {
+                owner,
+                spender,
+                value: amount,
+            });
+        }
+        ret
+    }
+
     fn approve(&self, spender: Address, amount: U256) -> Result<(), Error> {
         let ret = CasperErc20::default().approve(spender, amount);
         if ret.is_ok() {

@@ -1,6 +1,6 @@
 [package]
 name = "casper-erc20-crate"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Muhammad Adrees <muhammad.adrees@scytalelabs.com>"]
 edition = "2018"
 license = "MIT"

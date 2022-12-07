@@ -1,6 +1,6 @@
 [package]
 name = "casperlabs-erc20"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["Muhammad Adrees <muhammad.adrees@scytalelabs.com>"]
 edition = "2018"
 description = "A Basic Erc20 Implementation with New CasperLabs Crate"
@@ -10,4 +10,4 @@ license = "MIT"
 casper-contract = "1.4.4"
 casper-types = "1.5.0"
 casperlabs-contract-utils = "0.2.1"
-casper-erc20-crate = "0.1.0"
+casper-erc20-crate = "0.1.1"
