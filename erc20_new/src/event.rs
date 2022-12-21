@@ -1,11 +1,10 @@
 use alloc::{
     collections::BTreeMap,
     string::{String, ToString},
-    vec::Vec,
 };
 use casper_contract::contract_api::storage;
 use casper_erc20_crate::Address;
-use casper_types::{URef, U256};
+use casper_types::U256;
 
 use crate::data::get_package_hash;
 
@@ -41,10 +40,6 @@ impl ERC20Event {
 }
 
 pub fn emit(erc20_event: &ERC20Event) {
-    let mut events = Vec::new();
-    let formatted_hash = get_package_hash().to_formatted_string();
-    let hash_arr: Vec<&str> = formatted_hash.split('-').collect();
-    let package_hash = hash_arr[1].to_string();
     match erc20_event {
         ERC20Event::Approval {
             owner,
@@ -52,24 +47,21 @@ pub fn emit(erc20_event: &ERC20Event) {
             value,
         } => {
             let mut event = BTreeMap::new();
-            event.insert("contract_package_hash", package_hash);
+            event.insert("contract_package_hash", get_package_hash().to_string());
             event.insert("event_type", erc20_event.type_name());
             event.insert("owner", owner.to_string());
             event.insert("spender", spender.to_string());
             event.insert("value", value.to_string());
-            events.push(event);
+            storage::new_uref(event)
         }
         ERC20Event::Transfer { from, to, value } => {
             let mut event = BTreeMap::new();
-            event.insert("contract_package_hash", package_hash);
+            event.insert("contract_package_hash", get_package_hash().to_string());
             event.insert("event_type", erc20_event.type_name());
             event.insert("from", from.to_string());
             event.insert("to", to.to_string());
             event.insert("value", value.to_string());
-            events.push(event);
+            storage::new_uref(event)
         }
     };
-    for event in events {
-        let _: URef = storage::new_uref(event);
-    }
 }

@@ -1,5 +1,5 @@
 use crate::alloc::string::ToString;
-use crate::data::{self, Allowances, Balances, Nonces};
+use crate::data::{self, get_package_hash, Allowances, Balances, Nonces};
 use alloc::collections::BTreeMap;
 use alloc::{string::String, vec::Vec};
 use casper_contract::contract_api::storage;
@@ -297,8 +297,6 @@ pub trait ERC20<Storage: ContractStorage>: ContractContext<Storage> {
     }
 
     fn emit(&mut self, erc20_event: &ERC20Event) {
-        let mut events = Vec::new();
-        let package = data::get_package_hash();
         match erc20_event {
             ERC20Event::Approval {
                 owner,
@@ -306,26 +304,23 @@ pub trait ERC20<Storage: ContractStorage>: ContractContext<Storage> {
                 value,
             } => {
                 let mut event = BTreeMap::new();
-                event.insert("contract_package_hash", package.to_string());
+                event.insert("contract_package_hash", get_package_hash().to_string());
                 event.insert("event_type", erc20_event.type_name());
                 event.insert("owner", owner.to_string());
                 event.insert("spender", spender.to_string());
                 event.insert("value", value.to_string());
-                events.push(event);
+                storage::new_uref(event)
             }
             ERC20Event::Transfer { from, to, value } => {
                 let mut event = BTreeMap::new();
-                event.insert("contract_package_hash", package.to_string());
+                event.insert("contract_package_hash", get_package_hash().to_string());
                 event.insert("event_type", erc20_event.type_name());
                 event.insert("from", from.to_string());
                 event.insert("to", to.to_string());
                 event.insert("value", value.to_string());
-                events.push(event);
+                storage::new_uref(event)
             }
         };
-        for event in events {
-            let _: URef = storage::new_uref(event);
-        }
     }
 
     fn get_package_hash(&mut self) -> ContractPackageHash {

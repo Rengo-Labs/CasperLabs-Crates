@@ -244,8 +244,6 @@ pub fn get_package_hash() -> ContractPackageHash {
 }
 
 pub fn emit(event: &CEP47Event) {
-    let mut events = Vec::new();
-    let package = get_package_hash();
     match event {
         CEP47Event::Mint {
             recipient,
@@ -253,21 +251,21 @@ pub fn emit(event: &CEP47Event) {
         } => {
             for token_id in token_ids {
                 let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
+                param.insert(CONTRACT_PACKAGE_HASH, get_package_hash().to_string());
                 param.insert("event_type", "cep47_mint_one".to_string());
                 param.insert("recipient", recipient.to_string());
                 param.insert("token_id", token_id.to_string());
-                events.push(param);
+                storage::new_uref(param);
             }
         }
         CEP47Event::Burn { owner, token_ids } => {
             for token_id in token_ids {
                 let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
+                param.insert(CONTRACT_PACKAGE_HASH, get_package_hash().to_string());
                 param.insert("event_type", "cep47_burn_one".to_string());
                 param.insert("owner", owner.to_string());
                 param.insert("token_id", token_id.to_string());
-                events.push(param);
+                storage::new_uref(param);
             }
         }
         CEP47Event::Approve {
@@ -277,12 +275,12 @@ pub fn emit(event: &CEP47Event) {
         } => {
             for token_id in token_ids {
                 let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
+                param.insert(CONTRACT_PACKAGE_HASH, get_package_hash().to_string());
                 param.insert("event_type", "cep47_approve_token".to_string());
                 param.insert("owner", owner.to_string());
                 param.insert("spender", spender.to_string());
                 param.insert("token_id", token_id.to_string());
-                events.push(param);
+                storage::new_uref(param);
             }
         }
         CEP47Event::Transfer {
@@ -292,23 +290,20 @@ pub fn emit(event: &CEP47Event) {
         } => {
             for token_id in token_ids {
                 let mut param = BTreeMap::new();
-                param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
+                param.insert(CONTRACT_PACKAGE_HASH, get_package_hash().to_string());
                 param.insert("event_type", "cep47_transfer_token".to_string());
                 param.insert("sender", sender.to_string());
                 param.insert("recipient", recipient.to_string());
                 param.insert("token_id", token_id.to_string());
-                events.push(param);
+                storage::new_uref(param);
             }
         }
         CEP47Event::MetadataUpdate { token_id } => {
             let mut param = BTreeMap::new();
-            param.insert(CONTRACT_PACKAGE_HASH, package.to_string());
+            param.insert(CONTRACT_PACKAGE_HASH, get_package_hash().to_string());
             param.insert("event_type", "cep47_metadata_update".to_string());
             param.insert("token_id", token_id.to_string());
-            events.push(param);
+            storage::new_uref(param);
         }
     };
-    for param in events {
-        let _: URef = storage::new_uref(param);
-    }
 }
