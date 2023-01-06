@@ -102,8 +102,8 @@ pub trait ERC20<Storage: ContractStorage>: ContractContext<Storage> {
         ret
     }
 
-    fn burn(&self, from: Address, amount: U256) -> Result<(), Error> {
-        CasperErc20::default().burn(from, amount);
+    fn burn(&self, from: Address, value: U256) -> Result<(), Error> {
+        let ret = CasperErc20::default().burn(from, value);
         if ret.is_ok() {
             emit(&ERC20Event::Transfer {
                 from: Key::from(from),

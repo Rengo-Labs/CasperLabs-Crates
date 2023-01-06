@@ -1,12 +1,10 @@
+use crate::data::get_package_hash;
 use alloc::{
     collections::BTreeMap,
     string::{String, ToString},
 };
 use casper_contract::contract_api::storage;
-use casper_erc20_crate::Address;
-use casper_types::U256;
-
-use crate::data::get_package_hash;
+use casper_types::{Key, U256};
 
 pub enum ERC20Event {
     Approval {
